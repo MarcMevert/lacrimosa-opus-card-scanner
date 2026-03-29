@@ -10,11 +10,8 @@ A card scanner application for the board game **[Lacrimosa](https://www.kosmos.d
 - [About This Project](#about-this-project)
 - [Features](#features)
 - [How It Works](#how-it-works)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
 - [Usage](#usage)
 - [Opus Card Reference](#opus-card-reference)
-- [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -70,61 +67,6 @@ This brings the music of Mozart to life at the table without needing a separate 
 
 ---
 
-## Prerequisites
-
-| Requirement | Minimum version | Notes |
-|---|---|---|
-| Python | 3.10+ | |
-| OpenCV | 4.8+ | `opencv-python` via pip |
-| pygame | 2.5+ | Audio playback |
-| NumPy | 1.24+ | Image processing |
-| A webcam or built-in camera | — | Required for scanning |
-
----
-
-## Installation
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/MarcMevert/lacrimosa-opus-card-scanner.git
-cd lacrimosa-opus-card-scanner
-```
-
-### 2. Create and activate a virtual environment (recommended)
-
-```bash
-python -m venv .venv
-
-# macOS / Linux
-source .venv/bin/activate
-
-# Windows
-.venv\Scripts\activate
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Add audio tracks
-
-Place the Mozart audio files in the `audio/` directory. Each file must be named according to the card ID (see [Opus Card Reference](#opus-card-reference)), e.g.:
-
-```
-audio/
-├── requiem_introitus.mp3
-├── requiem_kyrie.mp3
-├── requiem_dies_irae.mp3
-...
-```
-
-> **Note:** Audio files are not bundled with this repository due to copyright. You can source high-quality recordings of Mozart's *Requiem* and other works from legal platforms (e.g., Musopen, IMSLP performance recordings, or your own CD rips).
-
----
-
 ## Usage
 
 ### Start the scanner
@@ -135,6 +77,8 @@ python scanner.py
 
 The application will open a camera window. Hold an Opus card up to the camera — once recognised, the corresponding Mozart piece will begin playing automatically.
 
+> **Audio source:** Music playback will be integrated with streaming services such as YouTube, Spotify, or other cloud platforms. The exact integration is yet to be defined.
+
 ### Command-line options
 
 | Option | Description | Default |
@@ -142,7 +86,6 @@ The application will open a camera window. Hold an Opus card up to the camera �
 | `--camera` | Camera device index | `0` (first webcam) |
 | `--fullscreen` | Launch in fullscreen mode | `false` |
 | `--volume` | Playback volume (0.0 – 1.0) | `0.8` |
-| `--audio-dir` | Path to audio files directory | `./audio` |
 
 **Example:**
 
@@ -178,29 +121,6 @@ The table below lists all Opus cards in the game and their corresponding Mozart 
 | OP-18 | Eine Kleine Nacht | Eine kleine Nachtmusik, K. 525 | I. Allegro |
 
 > **Note:** The card-to-composition mappings above are based on the movements of Mozart's *Requiem* and other works referenced in the Lacrimosa game. If you spot an inaccuracy for a specific card in your edition, please open an issue or pull request — contributions to keep this table up to date are very welcome.
-
----
-
-## Project Structure
-
-```
-lacrimosa-opus-card-scanner/
-├── audio/                  # Mozart audio tracks (not included, see Installation)
-├── cards/                  # Reference images of all Opus cards for recognition
-├── scanner/
-│   ├── __init__.py
-│   ├── capture.py          # Camera capture and frame processing
-│   ├── detector.py         # Card detection (edge / contour detection)
-│   ├── recogniser.py       # Card identification (image matching / lookup)
-│   └── player.py           # Audio playback engine
-├── tests/
-│   ├── test_detector.py
-│   ├── test_recogniser.py
-│   └── test_player.py
-├── scanner.py              # Main entry point
-├── requirements.txt        # Python dependencies
-└── README.md
-```
 
 ---
 
