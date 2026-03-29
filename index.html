@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lacrimosa Opus Card Scanner</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <h1>🎵 Lacrimosa Opus Card Scanner</h1>
+        <p class="subtitle">Hold an Opus card up to your camera to play its Mozart composition</p>
+      </header>
+
+      <main class="app-main">
+        <!-- Camera + overlay -->
+        <section class="scanner-section" aria-label="Card scanner">
+          <div class="video-wrapper">
+            <video id="camera-feed" autoplay playsinline muted></video>
+            <canvas id="overlay-canvas" aria-hidden="true"></canvas>
+            <div id="scan-indicator" class="scan-indicator" aria-live="polite">
+              Initialising camera…
+            </div>
+          </div>
+
+          <!-- Warped card preview produced by perspective transform -->
+          <div class="card-preview-wrapper">
+            <p class="preview-label">Detected card</p>
+            <canvas id="card-preview" width="250" height="350" aria-label="Detected card preview"></canvas>
+          </div>
+        </section>
+
+        <!-- Identified card information -->
+        <section class="card-info" id="card-info" aria-live="polite">
+          <h2 id="card-name">No card detected</h2>
+          <p id="card-composition" class="card-detail"></p>
+          <p id="card-movement" class="card-detail card-movement"></p>
+        </section>
+
+        <!-- Audio playback controls -->
+        <section class="audio-controls" aria-label="Audio playback controls">
+          <button id="btn-play"  class="btn-control" disabled aria-label="Play">▶ Play</button>
+          <button id="btn-pause" class="btn-control" disabled aria-label="Pause">⏸ Pause</button>
+          <button id="btn-stop"  class="btn-control" disabled aria-label="Stop">⏹ Stop</button>
+          <label class="volume-label" for="volume-slider">
+            🔊
+            <input
+              type="range"
+              id="volume-slider"
+              min="0" max="1" step="0.05" value="0.8"
+              aria-label="Volume"
+            />
+          </label>
+        </section>
+
+        <!-- Status / OpenCV load feedback -->
+        <div class="status-bar" role="status" aria-live="polite">
+          <span id="status-text">Initialising…</span>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
