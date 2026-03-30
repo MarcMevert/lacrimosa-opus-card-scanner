@@ -8,6 +8,7 @@ A card scanner application for the board game **[Lacrimosa](https://www.kosmos.d
 
 - [About the Game](#about-the-game)
 - [About This Project](#about-this-project)
+- [Audio Tracks](#audio-tracks)
 - [Features](#features)
 - [How It Works](#how-it-works)
 - [Usage](#usage)
@@ -36,6 +37,14 @@ The **Lacrimosa Opus Card Scanner** is a software companion for the board game. 
 3. Plays the corresponding audio track automatically.
 
 This brings the music of Mozart to life at the table without needing a separate device or app, enhancing the immersive atmosphere of the game.
+
+---
+
+## Audio Tracks
+
+Audio tracks are hosted as **GitHub Release assets** and loaded on demand — they are not bundled in the repository. When a card is detected, the matching MP3 is fetched from the release, cached in memory, and played immediately; repeat plays in the same session are instant.
+
+See **[docs/RELEASE-AUDIO.md](docs/RELEASE-AUDIO.md)** for full instructions on uploading audio files, using a custom CDN, and troubleshooting.
 
 ---
 
