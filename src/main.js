@@ -9,6 +9,7 @@ import { startCamera, stopCamera, captureFrame } from './camera.js';
 import { CardDetector } from './cv/card-detector.js';
 import { identifyCard } from './cv/card-identifier.js';
 import { AudioPlayer } from './audio/audio-player.js';
+import { getTrackUrl } from './audio/audio-loader.js';
 import { OPUS_CARDS } from './data/opus-cards.js';
 import './styles.css';
 
@@ -37,6 +38,8 @@ let cameraStream    = null;
 let animFrameId     = null;
 let isDetecting     = false;
 let lastDetectedId  = null;
+/** The card currently shown in the info panel (set by updateCardInfo). */
+let currentCard     = null;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -49,6 +52,7 @@ function setScanIndicator(msg) {
 }
 
 function updateCardInfo(card) {
+  currentCard = card;
   if (!card) {
     cardNameEl.textContent     = 'No card detected';
     cardCompEl.textContent     = '';
@@ -61,7 +65,7 @@ function updateCardInfo(card) {
   cardNameEl.textContent = `${card.id} – ${card.name}`;
   cardCompEl.textContent = card.composition;
   cardMovEl.textContent  = card.movement;
-  btnPlay.disabled       = card.audioUrl === null;
+  btnPlay.disabled       = false;
   btnPause.disabled      = !player.isPlaying;
   btnStop.disabled       = !player.hasTrack;
 }
@@ -108,6 +112,26 @@ function clearPreview() {
   previewCtx.clearRect(0, 0, cardPreview.width, cardPreview.height);
 }
 
+// ── Audio helpers ─────────────────────────────────────────────────────────────
+
+/**
+ * Fetch the audio track for `card`, play it, and update the status bar.
+ * Errors are caught, logged to the console, and shown to the user.
+ *
+ * @param {{ id: string, name: string }} card
+ */
+async function loadAndPlayCard(card) {
+  setStatus(`Loading ${card.name}…`);
+  try {
+    const trackUrl = await getTrackUrl(card.id);
+    await player.play(trackUrl);
+    setStatus(`Now playing: ${card.name}`);
+  } catch (err) {
+    console.error('[loadAndPlayCard]', err);
+    setStatus(`Error loading audio for ${card.name}`);
+  }
+}
+
 // ── Main detection loop ───────────────────────────────────────────────────────
 
 async function detectionLoop() {
@@ -150,9 +174,9 @@ async function detectionLoop() {
       updateCardInfo(card);
 
       // Auto-play only when a new card is detected
-      if (card && card.id !== lastDetectedId && card.audioUrl) {
+      if (card && card.id !== lastDetectedId) {
         lastDetectedId = card.id;
-        player.play(card.audioUrl).catch(console.error);
+        loadAndPlayCard(card).catch(console.error);
       }
     } else {
       setScanIndicator('Scanning…');
@@ -173,9 +197,18 @@ async function detectionLoop() {
 // ── Audio control bindings ────────────────────────────────────────────────────
 
 btnPlay.addEventListener('click', () => {
-  player.resume();
-  btnPause.disabled = false;
-  btnStop.disabled  = false;
+  if (player.hasTrack) {
+    // Resume a paused track
+    player.resume();
+    btnPause.disabled = false;
+    btnStop.disabled  = false;
+  } else if (currentCard) {
+    // Load and play the current card's track
+    loadAndPlayCard(currentCard).then(() => {
+      btnPause.disabled = false;
+      btnStop.disabled  = false;
+    }).catch(console.error);
+  }
 });
 
 btnPause.addEventListener('click', () => {

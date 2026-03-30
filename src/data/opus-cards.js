@@ -4,6 +4,10 @@
  *
  * The `hash` field will hold a BigInt dHash value once reference card images
  * have been processed. Until then it is null and identification is disabled.
+ *
+ * The `audioUrl` field is intentionally null for every card.  Audio tracks are
+ * loaded lazily at runtime from GitHub Release assets via `getTrackUrl(card.id)`
+ * in `src/audio/audio-loader.js` — see docs/RELEASE-AUDIO.md for details.
  */
 export const OPUS_CARDS = [
   {
